@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+    <h2>Active Listings in "{{ category.name }}"</h2>
+    {% if listings %}
+    {% for auction in listings %}
+    <ul class="list-group">
+                    {% include "auctions/auction_item.html" %}
+            </ul>
+            {% endfor %}
+    {% else %}
+        <p>No active listings in this category.</p>
+    {% endif %}
+{% endblock %}

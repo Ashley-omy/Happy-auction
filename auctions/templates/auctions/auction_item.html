@@ -1,0 +1,51 @@
+<!-- factoring out listings displaying-->
+<li class="list-group-item auction-item">
+    <div class="left-column">
+        <h3>{{ auction.title }}</h3>
+        {% if auction.image_url %}
+            <img src="{{ auction.image_url }}"
+                 alt="{{ auction.title }}"
+                 class="img-fluid"
+                 width="300">
+        {% endif %}
+    </div>
+
+    <div class="right-column">
+        <p>{{ auction.description }}</p>
+        <p>Starting Bid: ${{ auction.starting_bid }}</p>
+        {% if auction.highest_bid %}
+            <p>Current Highest Bid: ${{ auction.highest_bid }}</p>
+        {% else %}
+            <p>No bids placed yet.</p>
+        {% endif %}
+        <p>Created by: {{ auction.owner }}</p>
+        <p>Created on: {{ auction.created_at|date:"F j, Y, g:i a" }}</p>
+        {% if auction.winner == user %}<p class="alert alert-success">You won this auction!</p>{% endif %}
+        {% if auction.category %}
+            <p>Category: {{ auction.category }}</p>
+        {% else %}
+            <p>Category: None</p>
+        {% endif %}
+        <a href="{% url 'auction_detail' auction.id %}"
+           class="btn btn-primary"
+           style="width:160px">View Auction</a>
+        {% if user.is_authenticated %}
+            {% if not auction.in_watchlist %}
+                <form action="{% url 'watchlist' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="auction_id" value="{{ auction.id }}">
+                    <button type="submit" class="btn btn-secondary">Add to Watchlist</button>
+                </form>
+            {% else %}
+                <form action="{% url 'watchlist' %}"
+                      method="post"
+                      style="display:inline;
+                             margin-left:10px">
+                    {% csrf_token %}
+                    <input type="hidden" name="auction_id" value="{{ auction.id }}">
+                    <button type="submit" class="btn btn-secondary">Remove from Watchlist</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</li>

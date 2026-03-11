@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+    <h2>My Auctions</h2>
+    {% if not auctions %}
+        <p>You have no active auctions.</p>
+    {% else %}
+
+    {% for auction in auctions %}
+    <ul class="list-group">
+                    {% include "auctions/auction_item.html" %}
+            </ul>
+            {% endfor %}
+            {% endif %}
+    <a href="{% url 'index' %}">Back to Active Listings</a>
+{% endblock %}
