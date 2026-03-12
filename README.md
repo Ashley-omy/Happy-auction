@@ -10,7 +10,7 @@ Watch a short demo on Youtube: [Watch the demo](https://youtu.be/h6Qw_l6Fpas?si=
 
 You can access the deployed application here:
 
-🔗 https://happy-auction.onrender.com/my-auctions
+🔗 [https://happy-auction.onrender.com/my-auctions](https://happy-auction.onrender.com/)
 
 ---
 
