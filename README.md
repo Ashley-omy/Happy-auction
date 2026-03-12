@@ -3,6 +3,17 @@
 This is a full-stack auction web application built with Django.  
 Users can create auction listings, place bids, add items to a watchlist, and close auctions.
 
+## Project Background
+
+This project was developed as the **third project (Commerce)** in the **CS50 Web Programming with Python and JavaScript course**.
+
+The following components were designed and implemented independently:
+
+- Application architecture
+- Backend logic
+- Database schema
+- User interface
+
 # How to join auctions
 Watch a short demo on Youtube: [Watch the demo](https://youtu.be/h6Qw_l6Fpas?si=6EzjyUfLW_kfA6d7)
 
@@ -108,19 +119,6 @@ You can use the following accounts for testing:
 - Watchlist functionality
 - Comment system
 - Auction closing mechanism
-
----
-
-# Project Background
-
-This project was developed as the **third project (Commerce)** in the **CS50 Web Programming with Python and JavaScript course**.
-
-The following components were designed and implemented independently:
-
-- Application architecture
-- Backend logic
-- Database schema
-- User interface
 
 ---
 
