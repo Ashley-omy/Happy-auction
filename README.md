@@ -3,11 +3,8 @@
 This is a full-stack auction web application built with Django.  
 Users can create auction listings, place bids, add items to a watchlist, and close auctions.
 
-# Demo / How to Use
-Watch a short demo video explaining how to use this app:
-
-[![Watch the demo](https://img.youtube.com/vi/h6Qw_l6Fpas?si=6EzjyUfLW_kfA6d7/0.jpg)](https://youtu.be/h6Qw_l6Fpas?si=6EzjyUfLW_kfA6d7)
----
+# How to join auctions
+Watch a short demo on Youtube: [Watch the demo](https://youtu.be/h6Qw_l6Fpas?si=6EzjyUfLW_kfA6d7)
 
 # Live Demo
 
