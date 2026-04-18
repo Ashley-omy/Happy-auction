@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
-from .models import Bid, Category, Comment, auctionListing
+from .models import AuctionListing, Bid, Category, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -39,7 +39,7 @@ class AuctionListSerializer(serializers.ModelSerializer):
     in_watchlist = serializers.SerializerMethodField()
 
     class Meta:
-        model = auctionListing
+        model = AuctionListing
         fields = [
             "id",
             "title",
@@ -118,7 +118,7 @@ class AuctionDetailSerializer(AuctionListSerializer):
 
 class AuctionCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = auctionListing
+        model = AuctionListing
         fields = ["title", "description", "starting_bid", "image_url", "category"]
 
     def validate_starting_bid(self, value):

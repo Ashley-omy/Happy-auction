@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Category, auctionListing, Bid, Comment, Watchlist
+from .models import User, Category, AuctionListing, Bid, Comment, Watchlist
 
 
 @admin.register(Category)
@@ -21,7 +21,7 @@ class CommentInline(admin.TabularInline):
     can_delete = True
 
 
-@admin.register(auctionListing)
+@admin.register(AuctionListing)
 class AuctionListingAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "category", "owner",
                     "starting_bid", "is_active", "winner", "created_at")

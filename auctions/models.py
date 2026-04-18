@@ -16,7 +16,7 @@ class Category(models.Model):
         return self.name
 
 
-class auctionListing(models.Model):
+class AuctionListing(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
@@ -45,30 +45,18 @@ class auctionListing(models.Model):
 
 class Bid(models.Model):
     auction_listing = models.ForeignKey(
-        auctionListing, on_delete=models.CASCADE, related_name='bids')
+        AuctionListing, on_delete=models.CASCADE, related_name='bids')
     bidder = models.ForeignKey(User, on_delete=models.CASCADE)
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.bid_amount} by {self.bidder.username}"
 
-
-class Comment(models.Model):
-    auction_listing = models.ForeignKey(
-        auctionListing, on_delete=models.CASCADE)
-    commenter = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.commenter.username} on {self.auction_listing.title}: {self.content[:20]}"
-
-
 class Watchlist(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='watchlist')
     auction_listing = models.ForeignKey(
-        auctionListing, on_delete=models.CASCADE)
+        AuctionListing, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
@@ -84,7 +72,7 @@ class Watchlist(models.Model):
 
 class Comment(models.Model):
     auction_listing = models.ForeignKey(
-        auctionListing, on_delete=models.CASCADE, related_name='comments')
+        AuctionListing, on_delete=models.CASCADE, related_name='comments')
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

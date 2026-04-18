@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Bid, Category, Comment, User, Watchlist, auctionListing
+from .models import AuctionListing, Bid, Category, Comment, User, Watchlist
 from .serializers import (
     AuctionCreateSerializer,
     AuctionDetailSerializer,
@@ -22,7 +22,7 @@ from .serializers import (
 
 def get_auction_queryset(request):
     queryset = (
-        auctionListing.objects.select_related("category", "owner", "winner")
+        AuctionListing.objects.select_related("category", "owner", "winner")
         .annotate(highest_bid=Max("bids__bid_amount"))
         .order_by("-created_at")
     )
@@ -93,7 +93,7 @@ def auction_detail(request, auction_id):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def place_bid(request, auction_id):
-    auction = get_object_or_404(auctionListing, id=auction_id)
+    auction = get_object_or_404(AuctionListing, id=auction_id)
 
     if not auction.is_active:
         return Response({"error": "Auction is closed."}, status=400)
@@ -138,7 +138,7 @@ def place_bid(request, auction_id):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def add_comment(request, auction_id):
-    auction = get_object_or_404(auctionListing, id=auction_id)
+    auction = get_object_or_404(AuctionListing, id=auction_id)
     content = (request.data.get("content") or "").strip()
 
     if not content:
@@ -160,7 +160,7 @@ def toggle_watchlist(request):
     if not auction_id:
         return Response({"error": "auction_id is required."}, status=400)
 
-    auction = get_object_or_404(auctionListing, id=auction_id)
+    auction = get_object_or_404(AuctionListing, id=auction_id)
     watch_item = Watchlist.objects.filter(
         user=request.user,
         auction_listing=auction,

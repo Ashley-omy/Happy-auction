@@ -4,13 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.db.models import Max
-from .models import Bid, Category, User, Watchlist, auctionListing, Comment
+from .models import AuctionListing, Bid, Category, User, Watchlist, Comment
 from django.contrib.auth.decorators import login_required
 
 
 def index(request):
     auctions = (
-        auctionListing.objects
+        AuctionListing.objects
         .filter(is_active=True)
         .annotate(highest_bid=Max('bids__bid_amount'))
         .order_by('-created_at')
@@ -97,7 +97,7 @@ def new_auction(request):
         if category_id:
             category = Category.objects.get(id=category_id)
         # Create a new auction listing
-        auction_listing = auctionListing(
+        auction_listing = AuctionListing(
             title=title,
             description=description,
             starting_bid=starting_bid,
@@ -117,13 +117,13 @@ def new_auction(request):
 
 def auction_detail(request, auction_id):
     try:
-        auction = auctionListing.objects.get(id=auction_id)
+        auction = AuctionListing.objects.get(id=auction_id)
         bid = Bid.objects.filter(auction_listing=auction).order_by(
             '-bid_amount').first()
-    except auctionListing.DoesNotExist:
+    except AuctionListing.DoesNotExist:
         return HttpResponse("Auction not found.", status=404)
 
-    auction = auctionListing.objects.get(id=auction_id)
+    auction = AuctionListing.objects.get(id=auction_id)
     if request.user.is_authenticated:
         watchlisted_ids = set(
             Watchlist.objects.filter(user=request.user)
@@ -144,8 +144,8 @@ def auction_detail(request, auction_id):
 def place_bid(request, auction_id):
     if request.method == "POST":
         try:
-            auction = auctionListing.objects.get(id=auction_id)
-        except auctionListing.DoesNotExist:
+            auction = AuctionListing.objects.get(id=auction_id)
+        except AuctionListing.DoesNotExist:
             return HttpResponse("Auction not found.", status=404)
 
         current_highest = auction.bids.aggregate(
@@ -177,7 +177,7 @@ def place_bid(request, auction_id):
 def watchlist(request):
     if request.method == "POST":
         auction_id = request.POST["auction_id"]
-        auction = get_object_or_404(auctionListing, id=auction_id)
+        auction = get_object_or_404(AuctionListing, id=auction_id)
 
         watchlist_item = Watchlist.objects.filter(
             user=request.user,
@@ -211,7 +211,7 @@ def watchlist(request):
 
 @login_required
 def close_auction(request, auction_id):
-    auction = get_object_or_404(auctionListing, id=auction_id)
+    auction = get_object_or_404(AuctionListing, id=auction_id)
 
     if request.user != auction.owner:
         return HttpResponse("You are not the owner of this auction.", status=403)
@@ -231,7 +231,7 @@ def close_auction(request, auction_id):
 
 def closed_auctions(request):
     auctions = (
-        auctionListing.objects
+        AuctionListing.objects
         .filter(is_active=False)
         .annotate(highest_bid=Max('bids__bid_amount'))
     )
@@ -244,7 +244,7 @@ def closed_auctions(request):
 @login_required
 def my_auctions(request):
     auctions = (
-        auctionListing.objects
+        AuctionListing.objects
         .filter(owner=request.user)
         .annotate(highest_bid=Max('bids__bid_amount'))
     )
@@ -256,7 +256,7 @@ def my_auctions(request):
 @login_required
 def comment(request, auction_id):
     if request.method == "POST":
-        auction = get_object_or_404(auctionListing, id=auction_id)
+        auction = get_object_or_404(AuctionListing, id=auction_id)
         content = request.POST["comment_text"]
 
         comment = Comment(
@@ -280,7 +280,7 @@ def categories(request):
 
 def category_listings(request, category_name):
     category = Category.objects.filter(name=category_name).first()
-    listings = auctionListing.objects.filter(
+    listings = AuctionListing.objects.filter(
         category=category, is_active=True)
     return render(request, "auctions/category_listings.html", {
         "category": category,
