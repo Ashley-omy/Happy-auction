@@ -7,6 +7,8 @@ urlpatterns = [
          api_views.auction_detail, name="api_auction_detail"),
     path("auctions/<int:auction_id>/bid/",
          api_views.place_bid, name="api_place_bid"),
+    path("auctions/<int:auction_id>/close/",
+         api_views.close_auction_api, name="api_close_auction"),
     path("auctions/<int:auction_id>/comment/",
          api_views.add_comment, name="api_add_comment"),
     path("watchlist/toggle/", api_views.toggle_watchlist,

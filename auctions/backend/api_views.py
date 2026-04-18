@@ -57,12 +57,30 @@ def csrf(request):
 def auction_list(request):
     if request.method == "GET":
         status_filter = request.query_params.get("status", "active")
+        owner_filter = request.query_params.get("owner")
+        watchlist_filter = request.query_params.get("watchlist")
+        category_filter = request.query_params.get("category")
         auctions = get_auction_queryset(request)
 
         if status_filter == "active":
             auctions = auctions.filter(is_active=True)
         elif status_filter == "closed":
             auctions = auctions.filter(is_active=False)
+
+        if owner_filter == "me":
+            if not request.user.is_authenticated:
+                return Response({"error": "Authentication required."}, status=401)
+            auctions = auctions.filter(owner=request.user)
+
+        if watchlist_filter == "me":
+            if not request.user.is_authenticated:
+                return Response({"error": "Authentication required."}, status=401)
+            auctions = auctions.filter(watchlist__user=request.user)
+
+        if category_filter:
+            auctions = auctions.filter(category__name=category_filter)
+
+        auctions = auctions.distinct()
 
         serializer = AuctionListSerializer(
             auctions,
@@ -133,6 +151,31 @@ def place_bid(request, auction_id):
         },
         status=status.HTTP_201_CREATED,
     )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def close_auction_api(request, auction_id):
+    auction = get_object_or_404(AuctionListing, id=auction_id)
+
+    if request.user != auction.owner:
+        return Response({"error": "Only the owner can close this auction."}, status=403)
+
+    if not auction.is_active:
+        return Response({"error": "Auction is already closed."}, status=400)
+
+    highest_bid = auction.bids.order_by("-bid_amount").first()
+    if highest_bid:
+        auction.winner = highest_bid.bidder
+
+    auction.is_active = False
+    auction.save()
+
+    serializer = AuctionDetailSerializer(
+        get_object_or_404(get_auction_detail_queryset(request), id=auction.id),
+        context={"request": request},
+    )
+    return Response(serializer.data)
 
 
 @api_view(["POST"])
