@@ -5,9 +5,9 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/03commerce/auctions/backend
+WorkingDirectory=/home/ubuntu/03commerce/auctions
 EnvironmentFile=/home/ubuntu/03commerce/auctions/backend/.env
-ExecStart=/home/ubuntu/03commerce/.venv/bin/gunicorn commerce.wsgi:application --bind 127.0.0.1:8000 --workers 3 --timeout 120
+ExecStart=/home/ubuntu/03commerce/.venv/bin/gunicorn backend.commerce.wsgi:application --bind 127.0.0.1:8000 --workers 3 --timeout 120
 Restart=always
 RestartSec=5
 
