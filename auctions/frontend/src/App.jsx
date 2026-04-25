@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const API_BASE = '/api'
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
+
+function buildApiUrl(path) {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return `${API_BASE}${normalizedPath}`
+}
 
 function getCookie(name) {
   const cookies = document.cookie ? document.cookie.split('; ') : []
@@ -14,7 +19,7 @@ async function ensureCsrfCookie() {
     return
   }
 
-  await fetch(`${API_BASE}/auth/csrf/`, {
+  await fetch(buildApiUrl('/auth/csrf/'), {
     credentials: 'include',
   })
 }
@@ -41,7 +46,7 @@ async function apiRequest(path, options = {}) {
     }
   }
 
-  const response = await fetch(`${API_BASE}${path}`, config)
+  const response = await fetch(buildApiUrl(path), config)
   const contentType = response.headers.get('content-type') || ''
   const data = contentType.includes('application/json')
     ? await response.json()
@@ -678,7 +683,7 @@ function AuctionDetailPage({ auctionId, auth }) {
           <dl className="facts">
             <div>
               <dt>Starting bid</dt>
-              <dd>{formatMoney(auction.starting_bid)} &#40;$&#41;</dd>
+              <dd>{formatMoney(auction.starting_bid)}</dd>
             </div>
             <div>
               <dt>Current price</dt>

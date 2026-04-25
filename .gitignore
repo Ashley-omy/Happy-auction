@@ -1,8 +1,10 @@
 # Python / Django
 auctions/backend/__pycache__/
 auctions/backend/**/*.py[cod]
+auctions/backend/**/*.pyc.*
 auctions/backend/.pytest_cache/
 auctions/backend/.mypy_cache/
+auctions/backend/db.sqlite3
 
 # Local database and runtime files
 auctions/backend/db.sqlite3
@@ -17,4 +19,3 @@ auctions/backend/.env
 auctions/backend/.env.*
 auctions/frontend/.env
 auctions/frontend/.env.*
-

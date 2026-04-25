@@ -16,11 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import include, path
-from django.views.generic import RedirectView
+import os
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "").strip()
+
+
+def root(request):
+    if FRONTEND_URL:
+        return redirect(FRONTEND_URL)
+    return JsonResponse({"detail": "Auction API is running."})
+
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="http://127.0.0.1:5173/", permanent=False)),
+    path("", root),
     path("admin/", admin.site.urls),
     path("api/", include("backend.api_urls")),
 ]
