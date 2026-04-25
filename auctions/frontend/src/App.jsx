@@ -845,12 +845,12 @@ function CreateAuctionPage() {
   }
 
   return (
-    <section className="panel panel--compact">
+    <section className="panel">
       <p className="eyebrow">Create</p>
       <h1>Launch a new auction</h1>
       <p className="panel__lead">Create a new auction listing.</p>
       {message ? <p className="notice notice--error">{message}</p> : null}
-      <form className="form-card" onSubmit={handleSubmit}>
+      <form className="form-card form-card--centered" onSubmit={handleSubmit}>
         <label className="field">
           <span>Title</span>
           <input
