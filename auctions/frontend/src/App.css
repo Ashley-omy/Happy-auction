@@ -7,6 +7,25 @@
   margin: -10px -10px 20px;
   padding: 10px;
   position: relative;
+  overflow: hidden;
+}
+
+.masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/header-watermark.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.masthead__intro,
+.main-nav {
+  position: relative;
+  z-index: 1;
 }
 
 .masthead__intro {
@@ -68,6 +87,11 @@
   text-decoration: none;
   cursor: pointer;
   font: inherit;
+}
+
+.main-nav__link,
+.main-nav__button {
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .main-nav__button {
