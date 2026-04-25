@@ -257,36 +257,40 @@ function AppHeader({ auth, onLogout }) {
         )}
       </div>
       <nav className="main-nav">
-        <Link to="/" className="main-nav__link">
+        <Link to="/" className="main-nav__link btn btn-outline-success rounded-pill">
           Active
         </Link>
-        <Link to="/closed" className="main-nav__link">
+        <Link to="/closed" className="main-nav__link btn btn-outline-success rounded-pill">
           Closed
         </Link>
-        <Link to="/categories" className="main-nav__link">
+        <Link to="/categories" className="main-nav__link btn btn-outline-success rounded-pill">
           Categories
         </Link>
         {auth.authenticated ? (
           <>
-            <Link to="/new" className="main-nav__link">
+            <Link to="/new" className="main-nav__link btn btn-outline-success rounded-pill">
               New Auction
             </Link>
-            <Link to="/watchlist" className="main-nav__link">
+            <Link to="/watchlist" className="main-nav__link btn btn-outline-success rounded-pill">
               Watchlist
             </Link>
-            <Link to="/my-auctions" className="main-nav__link">
+            <Link to="/my-auctions" className="main-nav__link btn btn-outline-success rounded-pill">
               My Auctions
             </Link>
-            <button type="button" className="main-nav__button" onClick={onLogout}>
+            <button
+              type="button"
+              className="main-nav__button btn btn-outline-danger rounded-pill"
+              onClick={onLogout}
+            >
               Log Out
             </button>
           </>
         ) : (
           <>
-            <Link to="/login" className="main-nav__link">
+            <Link to="/login" className="main-nav__link btn btn-outline-success rounded-pill">
               Log In
             </Link>
-            <Link to="/register" className="main-nav__link">
+            <Link to="/register" className="main-nav__link btn btn-success rounded-pill">
               Register
             </Link>
           </>
@@ -302,7 +306,7 @@ function RouteView({ route, auth, refreshAuth }) {
       return (
         <ListingPage
           title="Active Listings"
-          description="Fresh auctions with live pricing and watchlist controls."
+          description="Fresh auctions with live pricing."
           query="?status=active"
           emptyMessage="No active listings available."
           auth={auth}
@@ -375,10 +379,10 @@ function AuthRequiredCard() {
         This page uses your account data, so you’ll need to log in first.
       </p>
       <div className="stack-row">
-        <Link to="/login" className="button button--primary">
+        <Link to="/login" className="button button--primary btn btn-success rounded-pill">
           Log In
         </Link>
-        <Link to="/register" className="button button--ghost">
+        <Link to="/register" className="button button--ghost btn btn-outline-success rounded-pill">
           Create Account
         </Link>
       </div>
@@ -517,13 +521,16 @@ function AuctionCard({ auction, auth, onToggleWatchlist }) {
         </dl>
         {didWin ? <p className="notice notice--success">You won this auction.</p> : null}
         <div className="stack-row">
-          <Link to={`/auction/${auction.id}`} className="button button--primary">
+          <Link
+            to={`/auction/${auction.id}`}
+            className="button button--primary btn btn-success rounded-pill"
+          >
             View Auction
           </Link>
           {auth.authenticated ? (
             <button
               type="button"
-              className="button button--ghost"
+              className="button button--ghost btn btn-outline-success rounded-pill"
               onClick={() => onToggleWatchlist(auction.id)}
             >
               {auction.in_watchlist ? 'Remove Watchlist' : 'Add Watchlist'}
@@ -691,7 +698,7 @@ function AuctionDetailPage({ auctionId, auth }) {
           <dl className="facts">
             <div>
               <dt>Starting bid</dt>
-              <dd>{formatMoney(auction.starting_bid)}</dd>
+              <dd>{formatMoney(auction.starting_bid)} &#40;$&#41;</dd>
             </div>
             <div>
               <dt>Current price</dt>
@@ -713,7 +720,7 @@ function AuctionDetailPage({ auctionId, auth }) {
             <div className="stack-row stack-row--wrap">
               <button
                 type="button"
-                className="button button--ghost"
+                className="button button--ghost btn btn-outline-success rounded-pill"
                 onClick={handleWatchlistToggle}
               >
                 {auction.in_watchlist ? 'Remove Watchlist' : 'Add Watchlist'}
@@ -721,7 +728,7 @@ function AuctionDetailPage({ auctionId, auth }) {
               {isOwner && auction.is_active ? (
                 <button
                   type="button"
-                  className="button button--danger"
+                  className="button button--danger btn btn-outline-danger rounded-pill"
                   onClick={handleCloseAuction}
                 >
                   Close Auction
@@ -751,7 +758,7 @@ function AuctionDetailPage({ auctionId, auth }) {
                   required
                 />
               </label>
-              <button type="submit" className="button button--primary">
+              <button type="submit" className="button button--primary btn btn-success rounded-pill">
                 Submit Bid
               </button>
             </form>
@@ -790,7 +797,7 @@ function AuctionDetailPage({ auctionId, auth }) {
                   required
                 />
               </label>
-              <button type="submit" className="button button--primary">
+              <button type="submit" className="button button--primary btn btn-success rounded-pill">
                 Post Comment
               </button>
             </form>
@@ -806,9 +813,9 @@ function CreateAuctionPage() {
     title: '',
     description: '',
     starting_bid: '',
-    image_url: '',
     category: '',
   })
+  const [imageFile, setImageFile] = useState(null)
   const [categories, setCategories] = useState([])
   const [message, setMessage] = useState('')
 
@@ -837,13 +844,19 @@ function CreateAuctionPage() {
   async function handleSubmit(event) {
     event.preventDefault()
     try {
-      const payload = {
-        ...form,
-        category: form.category || null,
+      const payload = new FormData()
+      payload.append('title', form.title)
+      payload.append('description', form.description)
+      payload.append('starting_bid', form.starting_bid)
+      if (form.category) {
+        payload.append('category', form.category)
+      }
+      if (imageFile) {
+        payload.append('image_url', imageFile)
       }
       const auction = await apiRequest('/auctions/', {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: payload,
       })
       navigate(`/auction/${auction.id}`)
     } catch (error) {
@@ -879,7 +892,7 @@ function CreateAuctionPage() {
           />
         </label>
         <label className="field">
-          <span>Starting bid</span>
+          <span>Starting bid &#40;$&#41;</span>
           <input
             type="number"
             min="0"
@@ -892,13 +905,11 @@ function CreateAuctionPage() {
           />
         </label>
         <label className="field">
-          <span>Image URL</span>
+          <span>Image</span>
           <input
-            type="url"
-            value={form.image_url}
-            onChange={(event) =>
-              setForm({ ...form, image_url: event.target.value })
-            }
+            type="file"
+            accept="image/*"
+            onChange={(event) => setImageFile(event.target.files?.[0] || null)}
           />
         </label>
         <label className="field">
@@ -915,7 +926,7 @@ function CreateAuctionPage() {
             ))}
           </select>
         </label>
-        <button type="submit" className="button button--primary">
+        <button type="submit" className="button button--primary btn btn-success rounded-pill">
           Create Auction
         </button>
       </form>
@@ -974,7 +985,7 @@ function CategoriesPage() {
           <Link
             key={category.id}
             to={`/categories/${encodeURIComponent(category.name)}`}
-            className="category-chip"
+            className="category-chip btn btn-outline-success rounded-pill"
           >
             {category.name}
           </Link>
@@ -1082,7 +1093,7 @@ function AuthForm({ title, lead, submitLabel, fields, onSubmit, footer }) {
             />
           </label>
         ))}
-        <button type="submit" className="button button--primary">
+        <button type="submit" className="button button--primary btn btn-success rounded-pill">
           {submitLabel}
         </button>
       </form>
@@ -1098,7 +1109,7 @@ function NotFoundPage() {
       <p className="panel__lead">
         This route doesn’t exist in the new frontend yet.
       </p>
-      <Link to="/" className="button button--primary">
+      <Link to="/" className="button button--primary btn btn-success rounded-pill">
         Back to auctions
       </Link>
     </section>

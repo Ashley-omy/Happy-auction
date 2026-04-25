@@ -33,6 +33,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class AuctionListSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
     category = CategorySerializer(read_only=True)
     owner_username = serializers.CharField(source="owner.username", read_only=True)
     current_price = serializers.SerializerMethodField()
@@ -81,6 +82,21 @@ class AuctionListSerializer(serializers.ModelSerializer):
         # Fallback: single query when optimization is not provided.
         highest = obj.bids.order_by("-bid_amount").first()
         return highest.bid_amount if highest else obj.starting_bid
+
+    def get_image_url(self, obj):
+        if not obj.image_url:
+            return ""
+
+        # Support legacy rows that stored full URLs before ImageField migration.
+        name = getattr(obj.image_url, "name", "")
+        if isinstance(name, str) and name.startswith(("http://", "https://")):
+            return name
+
+        request = self.context.get("request")
+        image_path = obj.image_url.url
+        if request:
+            return request.build_absolute_uri(image_path)
+        return image_path
 
     def get_in_watchlist(self, obj):
         # Prefer precomputed flag from view/queryset.
