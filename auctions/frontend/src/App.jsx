@@ -231,31 +231,19 @@ function AppHeader({ auth, onLogout }) {
   return (
     <header className="masthead">
       <div className="masthead__intro">
-        <p className="eyebrow">React frontend + Django API</p>
+        <p className="eyebrow">Online Marketplace</p>
         <Link to="/" className="brand">
           Happy Auctions
         </Link>
         <p className="tagline">
-          Browse active bids, follow favorites, and close your own listings from
-          one client-side app.
+          Browse active bids, follow favorites, and close your own listings.
         </p>
       </div>
-      <div className="status-card">
-        <span className="status-card__label">Account</span>
-        {auth.loading ? (
-          <strong>Checking session...</strong>
-        ) : auth.authenticated ? (
-          <>
-            <strong>{auth.user.username}</strong>
-            <span>Signed in and ready to bid.</span>
-          </>
-        ) : (
-          <>
-            <strong>Guest mode</strong>
-            <span>Sign in to bid, comment, and manage listings.</span>
-          </>
-        )}
-      </div>
+      {auth.authenticated && !auth.loading ? (
+        <div className="status-card">
+          <strong className="status-card__user">{auth.user.username}</strong>
+        </div>
+      ) : null}
       <nav className="main-nav">
         <Link to="/" className="main-nav__link btn btn-outline-success rounded-pill">
           Active
@@ -503,20 +491,12 @@ function AuctionCard({ auction, auth, onToggleWatchlist }) {
         <p className="auction-card__description">{auction.description}</p>
         <dl className="facts">
           <div>
-            <dt>Starting</dt>
-            <dd>{formatMoney(auction.starting_bid)}</dd>
-          </div>
-          <div>
             <dt>Current</dt>
             <dd>{formatMoney(auction.current_price)}</dd>
           </div>
           <div>
             <dt>Owner</dt>
             <dd>{auction.owner_username}</dd>
-          </div>
-          <div>
-            <dt>Created</dt>
-            <dd>{formatDate(auction.created_at)}</dd>
           </div>
         </dl>
         {didWin ? <p className="notice notice--success">You won this auction.</p> : null}
@@ -868,9 +848,7 @@ function CreateAuctionPage() {
     <section className="panel panel--compact">
       <p className="eyebrow">Create</p>
       <h1>Launch a new auction</h1>
-      <p className="panel__lead">
-        This form replaces the old Django template with a React-powered client.
-      </p>
+      <p className="panel__lead">Create a new auction listing.</p>
       {message ? <p className="notice notice--error">{message}</p> : null}
       <form className="form-card" onSubmit={handleSubmit}>
         <label className="field">
@@ -999,7 +977,7 @@ function LoginPage({ refreshAuth }) {
   return (
     <AuthForm
       title="Log in"
-      lead="Use your existing Django account and the session cookie will carry over to the API."
+      lead="Use your account to place bids and manage listings."
       submitLabel="Log In"
       fields={[
         { name: 'username', label: 'Username', type: 'text' },
@@ -1106,9 +1084,7 @@ function NotFoundPage() {
   return (
     <section className="panel panel--compact">
       <h1>Page not found</h1>
-      <p className="panel__lead">
-        This route doesn’t exist in the new frontend yet.
-      </p>
+      <p className="panel__lead">The page you requested could not be found.</p>
       <Link to="/" className="button button--primary btn btn-success rounded-pill">
         Back to auctions
       </Link>
