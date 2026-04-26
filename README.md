@@ -16,7 +16,6 @@ Backend API: https://api.happy-auction.omizoasuna.com
 - View user-specific listings ("My Auctions")
 - Post comments on listings
 - Place bids on active auctions
-- Upload and display images
 
 ## Tech Stack
 
@@ -45,11 +44,17 @@ Backend API: https://api.happy-auction.omizoasuna.com
 ## Architecture
 
 React (Amplify)
+
 ↓ (API requests with credentials)
+
 Django REST API (EC2 + Gunicorn)
+
 ↓
+
 SQLite Database
+
 ↓
+
 Media files served by Nginx
 
 ## Authentication
