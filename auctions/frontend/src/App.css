@@ -291,15 +291,21 @@
 }
 
 .notice--error {
-  color: #8b0000;
+  color: #b42318;
+  background: #fef3f2;
+  border-color: #fecdca;
 }
 
 .notice--success {
-  color: darkgreen;
+  color: #166534;
+  background: #ecfdf3;
+  border-color: #abefc6;
 }
 
 .notice--info {
   color: #333;
+  background: #f8f9fa;
+  border-color: #d0d7de;
 }
 
 .detail-hero {

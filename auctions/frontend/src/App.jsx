@@ -535,6 +535,7 @@ function AuctionDetailPage({ auctionId, auth }) {
     bidAmount: '',
     comment: '',
     message: '',
+    messageType: 'info',
   })
 
   useEffect(() => {
@@ -550,6 +551,7 @@ function AuctionDetailPage({ auctionId, auth }) {
             auction,
             error: '',
             message: '',
+            messageType: 'info',
           }))
         }
       } catch (error) {
@@ -569,7 +571,7 @@ function AuctionDetailPage({ auctionId, auth }) {
     }
   }, [auctionId])
 
-  async function refreshAuction(message = '') {
+  async function refreshAuction(message = '', messageType = 'info') {
     const auction = await apiRequest(`/auctions/${auctionId}/`)
     setState((current) => ({
       ...current,
@@ -577,6 +579,7 @@ function AuctionDetailPage({ auctionId, auth }) {
       loading: false,
       error: '',
       message,
+      messageType,
     }))
   }
 
@@ -588,9 +591,9 @@ function AuctionDetailPage({ auctionId, auth }) {
         body: JSON.stringify({ bid_amount: state.bidAmount }),
       })
       setState((current) => ({ ...current, bidAmount: '' }))
-      await refreshAuction('Bid placed successfully.')
+      await refreshAuction('Bid placed successfully.', 'success')
     } catch (error) {
-      setState((current) => ({ ...current, message: error.message }))
+      setState((current) => ({ ...current, message: error.message, messageType: 'error' }))
     }
   }
 
@@ -602,9 +605,9 @@ function AuctionDetailPage({ auctionId, auth }) {
         body: JSON.stringify({ content: state.comment }),
       })
       setState((current) => ({ ...current, comment: '' }))
-      await refreshAuction('Comment added.')
+      await refreshAuction('Comment added.', 'success')
     } catch (error) {
-      setState((current) => ({ ...current, message: error.message }))
+      setState((current) => ({ ...current, message: error.message, messageType: 'error' }))
     }
   }
 
@@ -616,7 +619,7 @@ function AuctionDetailPage({ auctionId, auth }) {
       })
       await refreshAuction()
     } catch (error) {
-      setState((current) => ({ ...current, message: error.message }))
+      setState((current) => ({ ...current, message: error.message, messageType: 'error' }))
     }
   }
 
@@ -629,9 +632,10 @@ function AuctionDetailPage({ auctionId, auth }) {
         ...current,
         auction,
         message: 'Auction closed.',
+        messageType: 'success',
       }))
     } catch (error) {
-      setState((current) => ({ ...current, message: error.message }))
+      setState((current) => ({ ...current, message: error.message, messageType: 'error' }))
     }
   }
 
@@ -699,7 +703,7 @@ function AuctionDetailPage({ auctionId, auth }) {
             </div>
           </dl>
           {didWin ? <p className="notice notice--success">You won this auction.</p> : null}
-          {state.message ? <p className="notice notice--info">{state.message}</p> : null}
+          {state.message ? <p className={`notice notice--${state.messageType}`}>{state.message}</p> : null}
 
           {auth.authenticated ? (
             <div className="stack-row stack-row--wrap">
