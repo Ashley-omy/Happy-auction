@@ -3,6 +3,7 @@ from decimal import Decimal, InvalidOperation
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.db.models import Max, Prefetch
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
@@ -49,7 +50,12 @@ def get_auction_detail_queryset(request):
 @permission_classes([AllowAny])
 @ensure_csrf_cookie
 def csrf(request):
-    return Response({"detail": "CSRF cookie set."})
+    return Response(
+        {
+            "detail": "CSRF cookie set.",
+            "csrfToken": get_token(request),
+        }
+    )
 
 
 @api_view(["GET", "POST"])

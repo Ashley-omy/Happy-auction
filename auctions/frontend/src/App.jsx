@@ -2,26 +2,23 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
+let csrfToken = ''
 
 function buildApiUrl(path) {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
   return `${API_BASE}${normalizedPath}`
 }
 
-function getCookie(name) {
-  const cookies = document.cookie ? document.cookie.split('; ') : []
-  const match = cookies.find((cookie) => cookie.startsWith(`${name}=`))
-  return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null
-}
-
 async function ensureCsrfCookie() {
-  if (getCookie('csrftoken')) {
+  if (csrfToken) {
     return
   }
 
-  await fetch(buildApiUrl('/auth/csrf/'), {
+  const response = await fetch(buildApiUrl('/auth/csrf/'), {
     credentials: 'include',
   })
+  const data = await response.json()
+  csrfToken = data.csrfToken || ''
 }
 
 async function apiRequest(path, options = {}) {
@@ -41,7 +38,7 @@ async function apiRequest(path, options = {}) {
   if (config.method && config.method !== 'GET' && config.method !== 'HEAD') {
     await ensureCsrfCookie()
     config.headers = {
-      'X-CSRFToken': getCookie('csrftoken') || '',
+      'X-CSRFToken': csrfToken,
       ...config.headers,
     }
   }
