@@ -65,11 +65,13 @@ Media files served by Nginx
 
 ## Project Structure
 
+```
 Happy-auction/
 ├── auctions/
-│ ├── backend/ # Django project
-│ └── frontend/ # React application
-├── freeImage/ # Sample images
+│   ├── backend/     # Django project
+│   └── frontend/    # React application
+├── freeImage/       # Sample images
+```
 
 ## Setup (Local Development)
 
