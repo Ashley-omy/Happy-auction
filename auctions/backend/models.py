@@ -25,7 +25,7 @@ class AuctionListing(models.Model):
         Category, on_delete=models.SET_NULL, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    closed_at = models.DateTimeField(auto_now_add=True)
+    closed_at = models.DateTimeField(null=True, blank=True)
 # check if the auction is active or not
     is_active = models.BooleanField(default=True)
     # many to one relationship with User model

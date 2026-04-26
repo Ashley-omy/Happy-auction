@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.db.models import Max, Prefetch
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -175,7 +176,8 @@ def close_auction_api(request, auction_id):
         auction.winner = highest_bid.bidder
 
     auction.is_active = False
-    auction.save()
+    auction.closed_at = timezone.now()
+    auction.save(update_fields=["winner", "is_active", "closed_at"])
 
     serializer = AuctionDetailSerializer(
         get_object_or_404(get_auction_detail_queryset(request), id=auction.id),
