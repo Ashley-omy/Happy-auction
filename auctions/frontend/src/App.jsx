@@ -10,15 +10,18 @@ function buildApiUrl(path) {
 }
 
 async function ensureCsrfCookie() {
-  if (csrfToken) {
-    return
-  }
-
   const response = await fetch(buildApiUrl('/auth/csrf/'), {
     credentials: 'include',
+    cache: 'no-store',
   })
+  if (!response.ok) {
+    throw new Error('Failed to get CSRF token.')
+  }
   const data = await response.json()
   csrfToken = data.csrfToken || ''
+  if (!csrfToken) {
+    throw new Error('CSRF token was not returned by the API.')
+  }
 }
 
 async function apiRequest(path, options = {}) {
