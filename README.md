@@ -1,4 +1,4 @@
-﻿# 🌟Happy Auction💰🎊
+﻿# 🤩🌟Happy Auction💰🎊
 
 A full-stack web application that allows users to create, browse, and interact with online auction listings.
 
