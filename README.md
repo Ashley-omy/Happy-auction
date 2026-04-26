@@ -3,6 +3,7 @@
 Happy Auctions is a full-stack auction app built with Django (API) and React/Vite (SPA).
 
 Deployment target for this repository:
+
 - Backend: AWS EC2 (Gunicorn + Nginx)
 - Frontend: AWS Amplify Hosting
 - API connection: Frontend calls `https://api.your-domain.com/api`
@@ -17,10 +18,12 @@ Deployment target for this repository:
 ## Deployment-Oriented Changes Included
 
 1. Frontend
+
 - API base URL is configurable via `VITE_API_BASE_URL`
 - Local development can still use Vite proxy (`/api -> http://127.0.0.1:8000`)
 
 2. Backend
+
 - `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS`, `CORS`, and `CSRF` moved to environment variables
 - Production cookie security is enabled when `DJANGO_DEBUG=False`
   - `SESSION_COOKIE_SECURE=True`
@@ -29,6 +32,7 @@ Deployment target for this repository:
 - `/` can redirect to `FRONTEND_URL`
 
 3. Ops support files
+
 - `auctions/backend/.env`
 - `auctions/frontend/.env`
 - `deploy/ec2/gunicorn.service`
@@ -63,6 +67,7 @@ nano auctions/backend/.env
 ```
 
 Set at least these values:
+
 - `DJANGO_SECRET_KEY`
 - `DJANGO_ALLOWED_HOSTS`
 - `DJANGO_CORS_ALLOWED_ORIGINS`
@@ -122,11 +127,13 @@ sudo certbot --nginx -d api.your-domain.com
 ### 2-2. Set environment variable
 
 In Amplify Environment variables:
+
 - `VITE_API_BASE_URL=https://api.your-domain.com/api`
 
 ### 2-3. Add SPA rewrite rule
 
 Amplify Console > Rewrites and redirects:
+
 - Source: `/<*>`
 - Target: `/index.html`
 - Type: `200 (Rewrite)`

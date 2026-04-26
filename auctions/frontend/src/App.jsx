@@ -283,7 +283,7 @@ function AppHeader({ auth, onLogout }) {
             <Link to="/login" className="main-nav__link btn btn-outline-success rounded-pill">
               Log In
             </Link>
-            <Link to="/register" className="main-nav__link btn btn-success rounded-pill">
+            <Link to="/register" className="main-nav__link btn btn-outline-success rounded-pill">
               Register
             </Link>
           </>
